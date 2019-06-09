@@ -4,7 +4,8 @@ from TicTacToeGame import TTTBoard, getkey
 
 class Recursivelearning:
     #This will explore all game states recursively
-    def __init__(self, Q=None):
+    def __init__(self, Q=None, decay_rate=None):
+        self.decay_rate = decay_rate or .95
         self.Q = Q or self.newQ()
     
     def newQ(self):
@@ -20,7 +21,7 @@ class Recursivelearning:
             val = next_board.score()
         else:
             func = {0:max, 1:min}[game.turn]
-            val = func([self.recursive_train(next_board, xy) for xy in next_board.allpossible()])      
+            val = self.decay_rate * func([self.recursive_train(next_board, xy) for xy in next_board.allpossible()])      
         self.Q[getkey(game.state)][move[0]*3 + move[1]] = val
         return val   
             
